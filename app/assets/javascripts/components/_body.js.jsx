@@ -32,13 +32,31 @@ var Body = React.createClass({
         this.setState({ items: newState })
     },
 
+    handleUpdate(item) {
+      $.ajax({
+          url: '/api/v1/items/'+item.id,
+          type: 'PUT',
+          data: { item: item },
+          success: () => {
+              //console.log('you did it!!!');
+              this.updateItems(item);
+              // callback to swap objects
+          }
+      })
+    },
 
+    updateItems(item) {
+        var items = this.state.items.filter((i) => { return i.id != item.id });
+        items.push(item);
+
+        this.setState({items: items });
+    },
 
     render() {
         return (
             <div>
                 <NewItem handleSubmit={this.handleSubmit}/>
-                <AllItems  items={this.state.items} handleDelete={this.handleDelete} />
+                <AllItems  items={this.state.items} handleDelete={this.handleDelete} onUpdate={this.handleUpdate} />
             </div>
         )
     }
